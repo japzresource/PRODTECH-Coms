@@ -165,7 +165,7 @@ async function boot(){
 const sorted=()=>[...S.pg].sort((a,b)=>(a.o||0)-(b.o||0));
 function renderAll(){renderCh();renderPg();renderNw();renderSeg()}
 function renderCh(){const c=$('chs');if(!S.ch.length){if(!loaded){c.innerHTML='<div class="empty">Loading…</div>';return}c.innerHTML='<div class="empty">No channels yet.<br><br><button class="b g" id="seed">Load default departments</button></div>';$('seed').onclick=seed;return}
- c.innerHTML=S.ch.sort((a,b)=>(a.o||0)-(b.o||0)).map(x=>`<div class="ch" data-id="${esc(x.id)}"><div class="th">${LOGO}</div><div class="ci"><b>${esc(x.name)}</b><div class="row"><span>${fmt(x.last)}</span><span class="${x.live>0?'live':'off'}">${x.live>0?'ON LIVE':'OFFLINE'}</span></div><div class="row"><span>code: ${esc(x.code)}</span><span>${x.live>0?x.live+' in call':''}</span></div></div></div>`).join('');
+ c.innerHTML=S.ch.sort((a,b)=>(a.o||0)-(b.o||0)).map(x=>`<div class="ch" data-id="${esc(x.id)}"><div class="th">${LOGO}</div><div class="ci"><b>${esc(x.name)}</b><div class="row"><span>${fmt(x.last)}</span><span class="${(LV[x.code]||0)>0?'live':'off'}">${(LV[x.code]||0)>0?'ON LIVE':'OFFLINE'}</span></div><div class="row"><span>code: ${esc(x.code)}</span><span>${(LV[x.code]||0)>0?LV[x.code]+' in call':''}</span></div></div></div>`).join('');
  c.querySelectorAll('.ch').forEach(e=>e.onclick=()=>askJoin(S.ch.find(x=>x.id===e.dataset.id)))}
 function seed(){['Audio','Visual','Lighting','Broadcasting','Networking','Help Center'].forEach((n,i)=>save('channels',{id:'seed-'+n.slice(0,3).toLowerCase(),name:n+(n==='Help Center'?'':' Department'),code:n.slice(0,3).toUpperCase()+(100+i*7),pass:'1234',live:0,last:0,o:i}))}
 function renderPg(){const s=sorted();$('pgb').innerHTML=s.length?s.map((x,i)=>`<tr class="${i===S.seg.idx?'now':i===S.seg.idx+1?'nx':''}"><td>${esc(x.t)}</td><td>${esc(x.d)}</td></tr>`).join(''):'<tr><td colspan="2" class="empty">No program yet. Press Add.</td></tr>'}
@@ -199,7 +199,7 @@ $('addNw').onclick=()=>modal(`<h2>Post news</h2><label>Name of the news</label><
 $('user').onclick=()=>{const n=prompt('Display name:',ME.name);if(n&&n.trim()){ME.name=n.trim();$('user').textContent=ME.name;try{SB.auth.updateUser({data:{name:ME.name}})}catch(e){}}};
 $('about').onclick=()=>{$('home').style.display='none';$('aboutv').style.display='block'};$('back').onclick=()=>{$('aboutv').style.display='none';$('home').style.display='block'};
 /* call */
-const bump=(c,d)=>{const x=S.ch.find(z=>z.id===c.id)||c;x.live=Math.max(0,(x.live||0)+d);x.last=Date.now();save('channels',x)};
+const bump=(c,d)=>{if(d<1)return;const x=S.ch.find(z=>z.id===c.id)||c;x.last=Date.now();save('channels',x)};
 const sv=p=>'<svg viewBox="0 0 24 24">'+p+'</svg>',SL='<path d="M4 4l16 16"/>';
 const IC={mic:sv('<rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'),micoff:sv('<rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>'+SL),
  cam:sv('<rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/>'),camoff:sv('<rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/>'+SL),
@@ -252,7 +252,7 @@ let booted=false,amode='in';
 function authMsg(t,ok){const m=$('amsg');m.textContent=t||'';m.style.color=ok?'var(--ok)':'var(--bad)'}
 function friendly(e){const t=(e&&e.message)||'Something went wrong.';return /invalid login/i.test(t)?'Wrong email or password.':/not confirmed/i.test(t)?'Confirm your email first (check your inbox), then sign in.':/already registered/i.test(t)?'That email already has an account. Use Sign in.':/rate limit/i.test(t)?'Too many attempts. Wait a few minutes and try again.':t}
 function setMode(m){amode=m;$('aname').parentElement.style.display=m==='up'?'block':'none';$('abtn').textContent=m==='up'?'Create account':'Sign in';$('tIn').classList.toggle('on',m==='in');$('tUp').classList.toggle('on',m==='up');$('apass').autocomplete=m==='up'?'new-password':'current-password';authMsg('')}
-function enterApp(sess){const u=sess.user,md=u.user_metadata||{};ME.name=md.name||(u.email||'').split('@')[0]||'Operator';$('user').textContent=ME.name;$('auth').style.display='none';if(!booted){booted=true;boot()}}
+function enterApp(sess){const u=sess.user,md=u.user_metadata||{};ME.name=md.name||(u.email||'').split('@')[0]||'Operator';$('user').textContent=ME.name;$('auth').style.display='none';if(!booted){booted=true;boot();startLobby()}}
 async function submitAuth(){const email=$('aemail').value.trim(),pass=$('apass').value,name=$('aname').value.trim();
  if(!email||!pass)return authMsg('Enter your email and password.');
  if(amode==='up'){if(!name)return authMsg('Enter a display name.');if(pass.length<6)return authMsg('Password must be at least 6 characters.')}
@@ -268,10 +268,15 @@ function initAuth(){$('tIn').onclick=()=>setMode('in');$('tUp').onclick=()=>setM
  $('so').onclick=async()=>{try{await SB.auth.signOut()}catch(e){}location.reload()};
  SB.auth.onAuthStateChange((ev)=>{if(ev==='PASSWORD_RECOVERY')setTimeout(()=>{const p=prompt('Type your new password (6+ characters):');if(p&&p.length>=6)SB.auth.updateUser({password:p}).then(r=>toast(r.error?r.error.message:'Password updated.'))},50)});
  SB.auth.getSession().then(r=>{if(r.data&&r.data.session)enterApp(r.data.session);else $('auth').style.display='flex'});setMode('in')}
+let LV={},LB=null;const LBKEY=Math.random().toString(36).slice(2,10);
+function lobbyTrack(room){try{LB&&LB.track({room:room||null,name:ME.name})}catch(e){}}
+function startLobby(){if(LB)return;LB=SB.channel('lobby',{config:{presence:{key:LBKEY}}});
+ LB.on('presence',{event:'sync'},()=>{const c={};Object.values(LB.presenceState()).forEach(a=>{const m=a[a.length-1],r=m&&m.room;if(r)c[r]=(c[r]||0)+1});LV=c;renderCh()});
+ LB.subscribe(st=>{if(st==='SUBSCRIBED')lobbyTrack(cur&&cur.code)})}
 let P={},TILES={},screenStream=null,loaded=false;
 const ICE={iceCandidatePoolSize:4,iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},
  {urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turns:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}]};
-async function enter(c){cur=c;$('cn').textContent='🔊 '+c.name;$('cc').textContent='code '+c.code;$('call').classList.add('open');bump(c,1);
+async function enter(c){cur=c;$('cn').textContent='🔊 '+c.name;$('cc').textContent='code '+c.code;$('call').classList.add('open');bump(c,1);lobbyTrack(c.code);
  closePeers();$('grid').innerHTML='';TILES={};MYKEY=Math.random().toString(36).slice(2,10);
  {const r=await getMedia();stream=r.s;icons();if(r.why)toast(r.why)}
  try{R=SB.channel('room-'+c.code,{config:{presence:{key:MYKEY},broadcast:{self:false}}});
@@ -313,7 +318,7 @@ function drawGrid(){if(!cur)return;const st=R?R.presenceState():{},keys=Object.k
 function vSenders(){const r=[];Object.values(P).forEach(p=>p.pc.getTransceivers().forEach(t=>{if(t.receiver.track&&t.receiver.track.kind==='video')r.push(t.sender)}));return r}
 function stopShare(){if(!screenStream)return;screenStream.getTracks().forEach(t=>t.stop());screenStream=null;const cv=stream&&stream.getVideoTracks()[0];if(cv)vSenders().forEach(x=>x.replaceTrack(cv).catch(()=>{}));$('scr').classList.remove('on');drawGrid()}
 async function startShare(){if(screenStream)return stopShare();try{const sc=await navigator.mediaDevices.getDisplayMedia({video:true}),vt=sc.getVideoTracks()[0];screenStream=sc;vSenders().forEach(x=>x.replaceTrack(vt).catch(()=>{}));$('scr').classList.add('on');vt.onended=stopShare;drawGrid()}catch(e){}}
-$('leave').onclick=()=>{stream&&stream.getTracks().forEach(t=>t.stop());stream=null;screenStream&&screenStream.getTracks().forEach(t=>t.stop());screenStream=null;rawMic&&rawMic.getTracks().forEach(t=>t.stop());try{AC&&AC.close()}catch(e){}AC=null;$('pop').style.display='none';$('scr').classList.remove('on');icons();closePeers();try{R&&SB.removeChannel(R)}catch(e){}R=null;$('grid').innerHTML='';TILES={};bump(cur,-1);cur=null;$('call').classList.remove('open')};
+$('leave').onclick=()=>{stream&&stream.getTracks().forEach(t=>t.stop());stream=null;screenStream&&screenStream.getTracks().forEach(t=>t.stop());screenStream=null;rawMic&&rawMic.getTracks().forEach(t=>t.stop());try{AC&&AC.close()}catch(e){}AC=null;$('pop').style.display='none';$('scr').classList.remove('on');icons();closePeers();try{R&&SB.removeChannel(R)}catch(e){}R=null;$('grid').innerHTML='';TILES={};lobbyTrack(null);cur=null;$('call').classList.remove('open')};
 function setSeg(i){const s=sorted();if(i<0||i>=s.length)return;S.seg={idx:i,by:ME.name,ts:Date.now()};renderAll();DBX.set('state','segment',S.seg).catch(e=>toast('Save failed: '+(e.message||e.code)))}
 function renderSeg(){const s=sorted(),i=S.seg.idx;if(!$('sgs'))return;
  $('sig').innerHTML=`<div>NOW: <span>${esc(s[i]?.t||'— not started —')}</span></div><div>NEXT: <span>${esc(s[i+1]?.t||'—')}</span></div>`;
