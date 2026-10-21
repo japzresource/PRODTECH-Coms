@@ -171,8 +171,9 @@ function renderCh(){const c=$('chs'),op=isOp();
  if(!loaded){c.innerHTML='<div class="empty">Loading…</div>';return}
  const mine=myCh(),list=(op?[...S.ch]:S.ch.filter(x=>mine.has(x.id))).sort((a,b)=>(a.o||0)-(b.o||0));
  if(!list.length){c.innerHTML=op?'<div class="empty">No channels yet.<br><br><button class="b g" id="seed">Load default departments</button></div>':'<div class="empty">No departments yet.<br>Press Add to find one.</div>';if(op&&$('seed'))$('seed').onclick=seed;return}
- c.innerHTML=list.map(x=>`<div class="ch" data-id="${esc(x.id)}"><div class="th">${LOGO}</div><div class="ci"><b>${esc(x.name)}</b><div class="row"><span>${fmt(x.last)}</span><span class="${(LV[x.code]||0)>0?'live':'off'}">${(LV[x.code]||0)>0?'ON LIVE':'OFFLINE'}</span></div><div class="row"><span>code: ${esc(x.code)}</span><span>${(LV[x.code]||0)>0?LV[x.code]+' in call':''}</span></div>${op?'':`<button class="rmv" data-rm="${esc(x.id)}">remove</button>`}</div></div>`).join('');
+ c.innerHTML=list.map(x=>`<div class="ch" data-id="${esc(x.id)}"><div class="th">${LOGO}</div><div class="ci"><b>${esc(x.name)}</b><div class="row"><span>${fmt(x.last)}</span><span class="${(LV[x.code]||0)>0?'live':'off'}">${(LV[x.code]||0)>0?'ON LIVE':'OFFLINE'}</span></div><div class="row"><span>code: ${esc(x.code)}</span><span>${(LV[x.code]||0)>0?LV[x.code]+' in call':''}</span></div>${op?`<button class="rmv" data-dl="${esc(x.id)}">delete</button>`:`<button class="rmv" data-rm="${esc(x.id)}">remove</button>`}</div></div>`).join('');
  c.querySelectorAll('.ch').forEach(e=>e.onclick=()=>askJoin(S.ch.find(x=>x.id===e.dataset.id)));
+ c.querySelectorAll('[data-dl]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();if(confirm('Delete this department for everyone?')){del('channels',b.dataset.dl);SB.from('channel_pass').delete().eq('id',b.dataset.dl).then(()=>{})}});
  c.querySelectorAll('[data-rm]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();del('mine',UID+'_'+b.dataset.rm)})}
 function seed(){['Audio','Visual','Lighting','Broadcasting','Networking','Help Center'].forEach((n,i)=>{const id='seed-'+n.slice(0,3).toLowerCase();SB.from('channel_pass').upsert({id,pass:'1234'}).then(r=>{if(r.error)toast('Could not save password: '+r.error.message)});save('channels',{id,name:n+(n==='Help Center'?'':' Department'),code:n.slice(0,3).toUpperCase()+(100+i*7),live:0,last:0,o:i})})}
 function renderPg(){const s=sorted();$('pgb').innerHTML=s.length?s.map((x,i)=>`<tr class="${i===S.seg.idx?'now':i===S.seg.idx+1?'nx':''}"><td>${esc(x.t)}</td><td>${esc(x.d)}</td></tr>`).join(''):'<tr><td colspan="2" class="empty">No program yet. Press Add.</td></tr>'}
@@ -261,7 +262,7 @@ function authMsg(t,ok){const m=$('amsg');m.textContent=t||'';m.style.color=ok?'v
 function friendly(e){const t=(e&&e.message)||'Something went wrong.';return /invalid login/i.test(t)?'Wrong email or password.':/not confirmed/i.test(t)?'Confirm your email first (check your inbox), then sign in.':/already registered/i.test(t)?'That email already has an account. Use Sign in.':/rate limit/i.test(t)?'Too many attempts. Wait a few minutes and try again.':t}
 function setMode(m){amode=m;$('aname').parentElement.style.display=m==='up'?'block':'none';$('abtn').textContent=m==='up'?'Create account':'Sign in';$('tIn').classList.toggle('on',m==='in');$('tUp').classList.toggle('on',m==='up');$('apass').autocomplete=m==='up'?'new-password':'current-password';authMsg('')}
 async function enterApp(sess){const u=sess.user,md=u.user_metadata||{};UID=u.id;ME.name=md.name||(u.email||'').split('@')[0]||'Operator';$('user').textContent=ME.name;
- await loadRole();applyRole();$('auth').style.display='none';if(!booted){booted=true;boot();startLobby();watchRole()}}
+ const st=await loadRole();if(st==='banned')return blockAccess('Your account has been suspended by an operator.');if(st==='gone')return blockAccess('This account was removed by an operator.');applyRole();$('auth').style.display='none';if(!booted){booted=true;boot();startLobby();watchRole()}}
 async function submitAuth(){const email=$('aemail').value.trim(),pass=$('apass').value,name=$('aname').value.trim();
  if(!email||!pass)return authMsg('Enter your email and password.');
  if(amode==='up'){if(!name)return authMsg('Enter a display name.');if(pass.length<6)return authMsg('Password must be at least 6 characters.')}
@@ -279,10 +280,12 @@ function initAuth(){$('tIn').onclick=()=>setMode('in');$('tUp').onclick=()=>setM
  SB.auth.getSession().then(r=>{if(r.data&&r.data.session)enterApp(r.data.session);else $('auth').style.display='flex'});setMode('in')}
 let ROLE='user',UID='';const OWNER='japzresource@gmail.com';
 const isOp=()=>ROLE==='operator',myCh=()=>new Set(S.mi.filter(m=>m.uid===UID).map(m=>m.ch));
-async function loadRole(){const r=await SB.from('profiles').select('role').eq('id',UID).maybeSingle();
- if(r.error||!r.data){ROLE='user';toast('Could not load your role. Run roles.sql in Supabase.');return}ROLE=r.data.role}
+async function loadRole(){const r=await SB.from('profiles').select('role,banned').eq('id',UID).maybeSingle();
+ if(r.error){ROLE='user';toast('Could not load your role. Run the latest SQL in Supabase.');return'error'}
+ if(!r.data){ROLE='user';return'gone'}if(r.data.banned){ROLE='user';return'banned'}ROLE=r.data.role;return'ok'}
+async function blockAccess(msg){try{await SB.auth.signOut()}catch(e){}$('auth').style.display='flex';setMode('in');authMsg(msg)}
 function applyRole(){const op=isOp();['addPg','addNw','mem','nextSg'].forEach(i=>{const e=$(i);if(e)e.style.display=op?'':'none'});$('user').title=op?'Operator':'User';renderAll()}
-function watchRole(){SB.channel('me-'+UID).on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles',filter:'id=eq.'+UID},p=>{const was=ROLE;ROLE=p.new.role;applyRole();if(was!==ROLE)toast('Your access changed. You are now '+(ROLE==='operator'?'an operator.':'a user.'))}).subscribe()}
+function watchRole(){SB.channel('me-'+UID).on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles',filter:'id=eq.'+UID},p=>{if(p.new.banned){alert('Your account has been suspended by an operator.');SB.auth.signOut().then(()=>location.reload());return}const was=ROLE;ROLE=p.new.role;applyRole();if(was!==ROLE)toast('Your access changed. You are now '+(ROLE==='operator'?'an operator.':'a user.'))}).subscribe()}
 async function checkPass(c,p){const r=await SB.rpc('check_channel_pass',{cid:c.id,p});return !r.error&&r.data===true}
 async function newCh(n,c,p){const id=uid(),r=await SB.from('channel_pass').upsert({id,pass:p});if(r.error)return toast('Could not save password: '+r.error.message);save('channels',{id,name:n,code:c,live:0,last:0,o:S.ch.length})}
 function userAddCh(){modal(`<h2>Find a department</h2><input id="q" placeholder="Search by name or code" autofocus><div id="rs" style="max-height:50vh;overflow:auto;margin-top:10px"></div><div class="btns"><button class="b g" id="x">Close</button></div>`,(o,close)=>{
@@ -291,13 +294,21 @@ function userAddCh(){modal(`<h2>Find a department</h2><input id="q" placeholder=
   $('rs').innerHTML=l.length?l.map(x=>`<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--ln)"><span><b>${esc(x.name)}</b><br><small style="color:var(--mu)">code: ${esc(x.code)}</small></span><button class="b" data-a="${esc(x.id)}">Add</button></div>`).join(''):'<div class="empty">No departments found.</div>';
   $('rs').querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{save('mine',{id:UID+'_'+b.dataset.a,uid:UID,ch:b.dataset.a});toast('Added to your departments');draw()})};
  $('q').oninput=draw;draw()})}
-async function openMembers(){const r=await SB.from('profiles').select('id,name,email,role').order('created_at');
+async function openMembers(){const r=await SB.from('profiles').select('id,name,email,role,banned').order('created_at');
  if(r.error)return toast('Could not load members: '+r.error.message);
  modal(`<h2>Members (${r.data.length})</h2><div id="ml" style="max-height:60vh;overflow:auto"></div><div class="btns"><button class="b g" id="x">Close</button></div>`,(o,close)=>{
   $('x').onclick=close;
-  $('ml').innerHTML=r.data.map(m=>{const own=(m.email||'').toLowerCase()===OWNER;return `<div style="display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--ln)"><span style="min-width:0"><b>${esc(m.name||'—')}${m.id===UID?' (you)':''}</b><br><small style="color:var(--mu);word-break:break-all">${esc(m.email)}</small></span>${own?'<span class="mono" style="color:var(--ac)">Owner</span>':`<select data-id="${esc(m.id)}"><option value="user"${m.role==='user'?' selected':''}>User</option><option value="operator"${m.role==='operator'?' selected':''}>Operator</option></select>`}</div>`}).join('');
+  const sm='style="padding:6px 10px;font-size:13px;flex:none"';
+  $('ml').innerHTML=r.data.map(m=>{const own=(m.email||'').toLowerCase()===OWNER,me=m.id===UID,id=esc(m.id);
+   const sel=`<select data-id="${id}"><option value="user"${m.role==='user'?' selected':''}>User</option><option value="operator"${m.role==='operator'?' selected':''}>Operator</option></select>`;
+   const ctl=own?'<span class="mono" style="color:var(--ac)">Owner</span>':me?sel:`<span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">${sel}<button class="b g" ${sm} data-ban="${id}" data-b="${m.banned?1:0}">${m.banned?'Unban':'Ban'}</button><button class="b" ${sm} style="background:var(--bad);padding:6px 10px;font-size:13px;flex:none" data-del="${id}">Remove</button></span>`;
+   return `<div style="display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--ln)"><span style="min-width:0"><b>${esc(m.name||'—')}${me?' (you)':''}</b>${m.banned?'<span style="color:var(--bad)"> · BANNED</span>':''}<br><small style="color:var(--mu);word-break:break-all">${esc(m.email)}</small></span>${ctl}</div>`}).join('');
   $('ml').querySelectorAll('select').forEach(sel=>{let prev=sel.value;sel.onchange=async()=>{const x=await SB.from('profiles').update({role:sel.value}).eq('id',sel.dataset.id).select();
-   if(x.error||!x.data||!x.data.length){toast(x.error?x.error.message:'Not allowed.');sel.value=prev}else{prev=sel.value;toast('Role updated')}}})})}
+   if(x.error||!x.data||!x.data.length){toast(x.error?x.error.message:'Not allowed.');sel.value=prev}else{prev=sel.value;toast('Role updated')}}});
+  $('ml').querySelectorAll('[data-ban]').forEach(b=>b.onclick=async()=>{const ban=b.dataset.b!=='1';if(ban&&!confirm('Ban this member? They will be locked out of the site.'))return;
+   const x=await SB.from('profiles').update({banned:ban}).eq('id',b.dataset.ban).select();if(x.error||!x.data||!x.data.length)return toast(x.error?x.error.message:'Not allowed.');toast(ban?'Member banned':'Member unbanned');close();openMembers()});
+  $('ml').querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this member? Their account will be deleted.'))return;
+   const x=await SB.rpc('remove_member',{target:b.dataset.del});if(x.error)return toast(x.error.message);toast('Member removed');close();openMembers()})})}
 let LV={},LB=null;const LBKEY=Math.random().toString(36).slice(2,10);
 function lobbyTrack(room){try{LB&&LB.track({room:room||null,name:ME.name})}catch(e){}}
 function startLobby(){if(LB)return;LB=SB.channel('lobby',{config:{presence:{key:LBKEY}}});
