@@ -133,6 +133,40 @@ tr.now td{background:#173a73}tr.nx td{background:#1d2a14}
 #ctx{position:fixed;display:none;background:#1b1f26;border:1px solid var(--ln);z-index:90;padding:4px;box-shadow:0 6px 20px #000a}
 #ctx button{display:block;background:none;border:0;color:var(--tx);padding:9px 14px;font:inherit;cursor:pointer;width:100%;text-align:left}#ctx button:hover{background:var(--bl)}
 @media(max-width:900px){.mbg{grid-template-columns:1fr}}
+/* ---- update: orange flash ---- */
+@keyframes flo{0%,49%{background:#ff7a00}50%,100%{background:#000}}
+.bn.fl{animation:flo .5s linear 4}
+.bn.fl small,.bn.fl b{color:#fff}
+/* ---- update: call layout (cams left, stage center, side right) ---- */
+#call{grid-template-columns:190px minmax(0,1fr) 320px;grid-template-rows:auto auto minmax(0,1fr) auto}
+#call .top{grid-column:1/4;grid-row:1}
+#call .bn{grid-column:1/4;grid-row:2}
+#grid{grid-column:1;grid-row:3;grid-template-columns:1fr;grid-auto-rows:110px;gap:8px;padding:10px;overflow-y:auto;align-content:start;background:#232428}
+#stage{grid-column:2;grid-row:3;overflow-y:auto;background:#000;min-width:0}
+#side{grid-column:3;grid-row:3}
+#ctl{grid-column:1/4;grid-row:4}
+.tile{min-height:0;cursor:pointer}
+.tile .av{width:44px;height:44px;font-size:20px}
+.tile .nm{font-size:12px;max-width:92%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile.sel{box-shadow:0 0 0 3px var(--bl)}
+#bigwrap{position:relative;height:62vh;background:#000;border-bottom:2px solid #111}
+#bigv{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+#bigph{position:absolute;inset:0;display:grid;place-items:center;color:var(--mu)}
+#bigx{position:absolute;top:10px;right:10px;z-index:3;width:38px;height:38px;border-radius:50%;border:0;background:#000a;color:#fff;font-size:20px;cursor:pointer}
+#bigx:hover{background:var(--bad)}
+#bign{position:absolute;left:12px;bottom:10px;z-index:2;background:#000a;padding:3px 9px;border-radius:5px;font-size:14px}
+#stage .mb{padding:12px;max-width:none}
+#cmsgs .xm{background:#3a2208;border-left:4px solid #ff8a00;padding:7px 9px;border-radius:4px}
+#cmsgs .xm.out{background:#13233f;border-left-color:var(--bl)}
+#cmsgs .xm b{color:#ff8a00}#cmsgs .xm.out b{color:#7fa6ff}
+#cmsgs .xw{color:#ffd9a8;font-size:13px}#cmsgs .xm.out .xw{color:#b7ccff}
+@media(max-width:800px){
+ #call{grid-template-columns:1fr;grid-template-rows:auto auto 96px minmax(0,1fr) auto}
+ #call .top,#call .bn{grid-column:1}
+ #grid{grid-column:1;grid-row:3;grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:120px;grid-auto-rows:auto;overflow-x:auto;overflow-y:hidden}
+ #stage{grid-column:1;grid-row:4}
+ #ctl{grid-column:1;grid-row:5}
+}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0"></script></head><body>
 <div id="auth"><div class="acard"><div class="alogo">PRODTECH</div><div class="asub mono">COMMS · MEMBERS ONLY</div><div class="atabs"><button id="tIn" class="on">Sign in</button><button id="tUp">Create account</button></div><label style="display:none">Display name<input id="aname" maxlength="30" autocomplete="nickname"></label><label>Email<input id="aemail" type="email" autocomplete="email"></label><label>Password<input id="apass" type="password" autocomplete="current-password"></label><button class="b" id="abtn">Sign in</button><p id="amsg" role="status"></p><button class="alink" id="aforgot">Forgot password?</button></div></div>
 <header><div style="display:flex;align-items:center;gap:12px"><button id="user" class="mono">Username</button><button id="so" class="mono">Sign out</button></div><img class="logo" alt="PRODTECH" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXwAAAAyCAYAAABfwmBiAAALN0lEQVR4nO2de6wdRRnAf/fcXvukVW5ai4+qtTRqpYjaGnxUFEmAiJGofzQaH5hoUDBE1KiI/mGCYhSIIZFU4yNqAkSDSIIoSHk0KYhFfCslKLWV0tra1va2t7fn4B/fWc7eze7M7GN2Z8/5fslJb3dnZ7/dnfnmm5lvvhlbuWb9OIqiKMrQ02laAEVRFKUeVOEriqKMCKrwFUVRRgRV+IqiKCOCKnxFUZQRQRW+oijKiKAKX1EUZURQha8oijIiqMJXFEUZEVThK4qijAhzHNPNAzYAK2PHuo7XuoZusOU3DewFngR2AfuAXkq6xcAbgBf0753Mt6pQEsl8e8AUsAf4V/93tET+84HnIc+xHFjE7Aba13PMMHjP/0aeJ+09Z7EGWAdMOKTN+wymMnIUeAqReSdw0CG/DcCpuBs+eeR1rR+me3WRcn8/8I+UNOuAtWTLnyZvN+O4jbR6FB07DNyO2zuP0wGei5Tzk4FJYGHivC8i+bvAX4AHLOlXAW9GdOYYg2fvAb8DHvYj5jN0gBciZbaH1NPodwx4FNhhy2TMMZbOZD+zuUWlrZjtwJXAr4BDiXMrkYdvmtuAq4HfkE9hTgCrgcuAD1UvVi52AFcBPwX+63jNLcAF3iRyYwsi9xakEc5iO/CSWiQqx2eBr6ccvxcxbkLg1cAfcqSfBDYi9XjSi0TuPAScaUnzSeBrGed+Bry7SoFSmAAuBq5JOTcNXAFcZ8vEtQXtEI6yB7HKbgS+glj0cUKR8wJE4bwzxzUTwHrg9zSv7AFWADcAm3CvlEv9iePMGxGL8yKkd5pGB/cebtNkybkw43gT5Kl3y4GbEAXVtLIHWOCQxmQYZ5Wxqnk64/hc4CSXDNo+hv9R4COE/Rw3I8McLrwIsdpC40LgU7gNBYT0La5DuuHDStlhoyYYB64FzmpYjrxkKdtQcGpwQ6qcRfkqMg4YMtc6pBlHlGqofBp4adNCFOAWZP4jSY/q5kF8M9a0ABWyGnhP00IMIU691WFQ+CDjhyHzVmCJJc0y4P01yFKGdzikCc3qfBbSc0rjRJ2ClGAm43hI79p1nsr3WHcRXN5jnnk4Xxw3nHMyXoZF4ccV0WHgQENymFhtOb8UUU4h80GHNNt8C1GAMzKOP1SrFMX5W8bxPJOkvjngmO5Sn0IUpGw5qKsxMOlrJ4Vf1aTVOcDuCvKJuzrFH24B8HPEfSuNs2J/7wZOZ/ZkbieWZxUfJ81FbTlwp+GaVZgL1irLPd8L/IlqC1c3ll8HmXz6NvCajPSrsb/DLwPXM9stM82CSrrMFnXRHEd6T1sMaU/LOP4xxLuhE7u/qVIly2UPeAvwTcM15yIurlF6cHvuKM004oKcxhWI10bSBTZNzizSnjcrfZorMkgP5CnDPSImEPfLLO4APt/PL/59q6ab+Hu/wzUhGMcmGZzkq0rhPw48UVFeWfwE+ETGuRWxv2cQP/1dnuVJ8nfL+bRx5Dg2v/W7Ef9431wD/DjjXAf7ePI+shWUT7ZhbqjSqELWlZbz2/FXN5p610WxKe/vElavJY6p3NfVGJTW1yG0Wq48aTgXwuRbD7MlZVPotm9RV7fxmOV8qGXGZKX5dF8MYWy3LdgU1n9qkaIYIegYE07DwVVV3joKvWkMvMyK1qqYwPw+py3Xh6JIQ5EjL1kTm+D3mUKaOFX8YfvOddSb0k4Grl0Em0L/MIOVmMmWMPJfTb6QKM9omXLcQu4we6x4OeaFSFmTWjYWAx/vyzAdk7Ubu3/yeaJzkezRsfMt93IZ41SKY6qQvpfoN8Uk4uK4ECm78bAJ0fuIFpjN6afZSnNrPWzfoS1eU0nORRaSxd9/pM/S/Pdt8yvR0OnTiCE53j9mWw1spaox/C9UlE9RflnwurXIJGMd/Lmm+5SlrUMUTSmLJi38VyET5Hl4HLvHWFOEXPZsjdWFtUhRkrZ235Pc1rQADqQFv1KqwzSp5nOVZJMWfhGDra4wAGm0Wd+0WfZnyBNLJ1T2I7FnilCFK6kLl9d0n1HGpHh9rlRt2xh+6JOPikdCVuSuvB7zCjQTjwHvqlCWNJ7ArdsdSne2rQphmMIPuDIM9TdOW4LZtRbXAhOKMkpyOqK0y3Ar8DLMXh5FuQ8JnNY2K7CNmIZthk0xKvUTqg7MRRsrwl3IqtNFVDcR+hji8fC9CvLaC3wHeC0SQ8fm165Ug6lRHYrKmsKRAtf4XiBZhpC/UxnZkhuWJI3L6NhxZP+Gqf7fPezre3JRVRfqNGSHp6pCF0TE3ZxO4Fd5TiFL7W9FNjSwsQMZDvong6XgJ/DTU1DK0UbDxoWtSKiCZL1L1sH48xcd/qyDtn6nuxHXTJ8N1jzgM8AXy2RSlcI/hgQtazsziIvnK5Btz0ysQGLjvA7paaglr9RNmrUYMjaFGLKFbyKyxn1Tep6qqha1rRN9acwgWySeAvzIIf2DwNuRRVxl3mdbC3somNwNfb7bYSr7vrF9h1B2q2sjTj23PArKNCnWJivDlb3AJcAHHNLeiERMPIXiSt82sbuMwYo7X78FyGKesviUMfmbQBrbdQZ5hqH3mUad79n2c8G2OG4tgxAlyXyblBvC2PHKFp7FirpBmTmMKPNHgV8AzzakfR9wHmLtbyO/VWkLHHUP8ENkrsHUOKR1+7IKaxSiOLrmxchzZLEfe+O+DgmXHbe4k+8iT+WJh1GOwv6Ox/6e6N/TtDfqX3PcLy9NemCdw2AT82gZf1oY8Pj/0+bZssJXZxFXlNH3uRcpoyaO92XMGpr4BhImfE9Mrih9dJ+0UCc2mU2K/QCwmXJROuvonXcx1z0nGVTh2+kiCvwM4CpgoyHtJDKRdgnwffKN69u8JyaBy3Lk54PNDmmuxB5XqG4ebFoAT3wJ2fQ+BM5H5rNM9IAHMMeEubgyidy5B3hbA/fNi6mH5BRapKox/LbOrrvSQ7yQLkU2TrdxPbKRyNIc99hNmLtFxbnBIc3J3qXIj8/32uQY/oIG753ENQT11V6lKEaeeppGXfrPFALZqaeZR1DTDPGoTFwdQCz3M4GdlrQbkZAPprHlOEeRHkSoTAMPO6QLrfH/AdJYK35x/e5bvUpRDBf91fRoSDR/l4XTPGpVlXOUVpJGQzxvwr5QaxlSwC/CvgEKyJDJplLS+WMDcLBpIXLyP8Rv2ecYa5NlP6RwEq7veB/hDfm5kHfezAem+1Ru4YcwSx0K0RDP5bh58WxChnlslsQhZAz8c6Wkq5a9iLJ/xDF9KDHN70BWO/ve6rLJ3m1be9a/Rhwc2uSKbNKVdfVqTW6rTvOFrt2UaWQ12dkZ54fV7c3GIeBmZOHVt5DYPnNILwDnIR9sypLnPqRxuB14OTI09Eqkt9Dp5z+BtPZVWRY9BquEoz2BNyOL0B5BNm9xrZx3IgHtfBN5F51AvD+OIqufbwJ+C/yRwaY8PtmFVLa0dQA78Vs37kPiQIXAXTnSdhGlfypSts9GeszPR8r3XGA+9SlSF2cE0yZL91cliIGZvgxdpOcahWA4iBhlTjHFxlauWe9iJXSAJWRPEu1hOH3x87AEKaTRDl7x9xq5l+0jn1UT+cZPIBVhnNm7bEUUsfSS18d7cNP9n61xSmMxgwm8qMLmteRM12XJ3UUU/2HqHWaZB5xEusKfQuZ9fMmzBIkplSRrF6WimL5f5OZ5BDGAijAPqTuRARqV8zQ3zPh9bdjkjtK4yL4I+c5xIzmKc1Pm2fMwH3gOg93NiP17BAcr31XhK4qiKC0nNI8KRVEUxROq8BVFUUYEVfiKoigjgip8RVGUEUEVvqIoyoigCl9RFGVEUIWvKIoyIqjCVxRFGRH+D9D4Is+YWeDiAAAAAElFTkSuQmCC"><div style="display:flex;align-items:center;gap:18px"><button id="monb">Monitor</button><button id="mem" style="display:none">Members</button><button id="about">About</button></div></header>
@@ -175,7 +209,8 @@ tr.now td{background:#173a73}tr.nx td{background:#1d2a14}
 <div id="call"><div class="top"><b id="cn" style="font-size:20px"></b><span class="mono" id="cc"></span></div>
 <div class="bn"></div>
 <div id="grid"></div>
-<aside id="side"><div id="segwrap"><h4>PROGRAM SEGMENTS</h4><div class="sig" id="sig"></div><div id="sgs"></div><button class="b" style="width:100%;margin-top:8px" id="nextSg">Next segment ▶</button></div><div id="chat"><h4>CHAT</h4><div id="cmsgs"></div><div id="cin"><input id="cmsg" placeholder="Message the call…" maxlength="300"><button class="b" id="csend">Send</button></div></div></aside>
+<div id="stage"><div id="bigwrap" style="display:none"><button id="bigx" aria-label="Close">✕</button><div id="bigph" class="mono">No camera or screen share</div><video id="bigv" autoplay playsinline muted></video><span id="bign"></span></div><div id="monhost"></div></div>
+<aside id="side"><div id="segwrap"><h4>PROGRAM SEGMENTS</h4><div class="sig" id="sig"></div><div id="sgs"></div><button class="b" style="width:100%;margin-top:8px" id="nextSg">Next segment ▶</button></div><div id="chat"><h4>CHAT</h4><div id="cmsgs"></div><div id="cin"><input id="cmsg" placeholder="Message the call… (@visual to reach another department)" maxlength="300"><button class="b" id="csend">Send</button></div></div></aside>
 <div id="ctl"><div class="grp"><button class="ib" id="mic" aria-label="Mute microphone"></button><button class="ib sm" id="micM" aria-label="Audio settings"></button><button class="ib" id="cam" aria-label="Turn camera on or off"></button><button class="ib sm" id="camM" aria-label="Camera settings"></button></div><div class="grp"><button class="ib" id="scr" aria-label="Share screen"></button><button class="ib" id="more" aria-label="Settings"></button></div><button class="lvb" id="leave" aria-label="Leave call"></button></div><div id="pop"></div></div>
 <div id="toast"></div>
 
@@ -466,5 +501,66 @@ function renderSeg(){const s=sorted(),i=S.seg.idx;renderBanner();if(!$('sgs'))re
  $('sgs').innerHTML=s.length?s.map((x,k)=>`<button class="sg ${k===i?'now':k===i+1?'nx':''}" data-k="${k}">${fmtT(x.tm)?`<small class="mono" style="color:${k===i?'#fff':'var(--ac)'}">${esc(fmtT(x.tm))}</small><br>`:''}${k+1}. ${esc(x.t)}<br><small style="color:#cfd6e2">${esc(x.d)}</small></button>`).join(''):'<div class="empty">Add program items on the dashboard.</div>';
  $('sgs').querySelectorAll('.sg').forEach(b=>b.onclick=()=>setSeg(+b.dataset.k))}
 $('nextSg').onclick=()=>setSeg(S.seg.idx+1);
+
+/* ===== UPDATE: flash, stage, @chat, positions ===== */
+let SEL=null,XC=null,REALSEG=null,segTimer=0;
+const POS=['A1','A2','CS Operator','LV Operator','IMAG Operator','Camera Operator','Lighting Operator','Broadcast Director'];
+ME.pos='';
+function loadPos(){if(!UID)return;SB.from('profiles').select('position').eq('id',UID).maybeSingle().then(r=>{ME.pos=(r.data&&r.data.position)||''},()=>{})}
+const _ar=applyRole;applyRole=function(){_ar();loadPos()};
+
+/* --- segment change: 4 orange blinks, then it updates for everyone --- */
+function segFlashEls(f){document.querySelectorAll('.bn').forEach(e=>{e.classList.remove('fl');if(f){void e.offsetWidth;e.classList.add('fl')}})}
+function applySeg(d){REALSEG=d;
+ if(d.idx===S.seg.idx&&!segTimer){S.seg=d;renderSeg();renderPg();return}
+ clearTimeout(segTimer);segFlashEls(true);
+ segTimer=setTimeout(()=>{segTimer=0;segFlashEls(false);S.seg=REALSEG;renderAll();if(REALSEG.idx>=0)toast('NOW: '+(sorted()[REALSEG.idx]?.t||'—'))},2000)}
+const _ac=applyChange;applyChange=function(p){const row=p.eventType==='DELETE'?p.old:p.new;
+ if(row&&row.col==='state'&&row.id==='segment'){const d=p.new&&p.new.data;if(d&&!(REALSEG&&d.ts&&d.ts===REALSEG.ts))applySeg(d);return}
+ _ac(p)};
+function setSeg(i){if(!isOp())return toast('Only operators can change segments.');const s=sorted();if(i<0||i>=s.length)return;const d={idx:i,by:ME.name,ts:Date.now()};applySeg(d);DBX.set('state','segment',d).catch(e=>toast(errMsg(e)))}
+$('nextSg').onclick=()=>setSeg((REALSEG?REALSEG.idx:S.seg.idx)+1);
+
+/* --- stage: click a cam on the left to enlarge, X to close, monitor board below --- */
+function markSel(){Object.keys(TILES).forEach(k=>TILES[k].classList.toggle('sel',k===SEL))}
+function syncBig(){const w=$('bigwrap'),v=$('bigv');
+ if(!SEL||!cur||!TILES[SEL]){SEL=null;w.style.display='none';v.srcObject=null;markSel();return}
+ let ms=null;if(SEL==='me'){const vt=stream&&stream.getVideoTracks()[0];ms=screenStream||(vt&&vt.enabled?stream:null)}else ms=P[SEL]&&P[SEL].stream;
+ const hasV=!!(ms&&ms.getVideoTracks().length);
+ if(hasV){if(v.srcObject!==ms)v.srcObject=ms;v.style.display='block';const pl=v.play&&v.play();pl&&pl.catch&&pl.catch(()=>{})}else{v.srcObject=null;v.style.display='none'}
+ $('bigph').style.display=hasV?'none':'grid';
+ $('bign').textContent=TILES[SEL].querySelector('.nm').textContent;w.style.display='block';markSel()}
+const _dg=drawGrid;drawGrid=function(){_dg();syncBig()};
+$('grid').addEventListener('click',e=>{const t=e.target.closest('.tile');if(!t)return;const k=Object.keys(TILES).find(x=>TILES[x]===t);if(k){SEL=k;syncBig()}});
+$('bigx').onclick=()=>{SEL=null;syncBig()};
+const _en=enter;enter=function(c){SEL=null;$('monhost').appendChild($('monv'));$('monv').style.display='block';$('monback').style.display='none';renderMon();return _en(c)};
+const _lvx=$('leave').onclick;$('leave').onclick=()=>{_lvx();SEL=null;syncBig();document.body.insertBefore($('monv'),$('ctx'));$('monv').style.display='none';$('monback').style.display=''};
+
+/* --- @department chat: "@visual message" goes to that department's call --- */
+const _sl=startLobby;startLobby=function(){_sl();startX()};
+function startX(){if(XC)return;XC=SB.channel('xchat',{config:{broadcast:{self:false}}});
+ XC.on('broadcast',{event:'x'},e=>{const m=e.payload;if(!m||!cur||m.fc===cur.code||!(m.codes||[]).includes(cur.code))return;xMsg(m,false)}).subscribe()}
+function xMsg(m,out){const d=document.createElement('div'),h=document.createElement('b'),w=document.createElement('div'),t=document.createElement('div');
+ d.className='xm'+(out?' out':'');h.textContent=out?'➡ To '+m.to:'📨 From '+(m.fd||'another department');
+ w.className='xw';w.textContent=(m.n||'?')+(m.pos?' - '+m.pos:'');t.textContent=m.t||'';
+ d.append(h,w,t);const c=$('cmsgs');c.appendChild(d);c.scrollTop=c.scrollHeight;if(!out)toast('Message from '+(m.fd||'another department'))}
+function sendChat(){const raw=$('cmsg').value.trim();if(!raw||!R||!cur)return;
+ if(raw[0]==='@'){const m=raw.match(/^@(\S+)\s+([\s\S]+)$/);if(!m)return toast('Write it like: @visual your message');
+  const tok=m[1].toLowerCase(),all=tok==='all'||tok==='everyone',
+   list=S.ch.filter(c=>c.id!==cur.id&&(all||c.name.toLowerCase().startsWith(tok)||c.code.toLowerCase()===tok));
+  if(!list.length)return toast('No department matches @'+m[1]+'. Try: '+S.ch.filter(c=>c.id!==cur.id).map(c=>'@'+c.name.split(' ')[0].toLowerCase()).join(', '));
+  const pl={codes:list.map(c=>c.code),fc:cur.code,fd:cur.name,n:ME.name,pos:ME.pos||'',t:m[2].slice(0,300),to:list.map(c=>c.name).join(', ')};
+  try{XC&&XC.send({type:'broadcast',event:'x',payload:pl})}catch(e){}xMsg(pl,true);$('cmsg').value='';return}
+ const m={n:ME.name,t:raw.slice(0,300)};try{R.send({type:'broadcast',event:'chat',payload:m})}catch(e){}addChat(m);$('cmsg').value=''}
+
+/* --- Members: operator assigns each member a position --- */
+const _om=openMembers;openMembers=async function(){await _om();const ml=$('ml');if(!ml)return;
+ const r=await SB.from('profiles').select('id,position');if(r.error)return;const pm={};r.data.forEach(x=>pm[x.id]=x.position||'');
+ [...ml.children].forEach(row=>{const el=row.querySelector('[data-id],[data-ban]'),id=el&&(el.dataset.id||el.dataset.ban),nm=row.firstElementChild;if(!nm)return;
+  if(!id){if(/Owner/.test(row.textContent))nm.insertAdjacentHTML('beforeend','<br><small style="color:var(--ac)">Prodtech Head</small>');return}
+  nm.insertAdjacentHTML('beforeend','<br><select data-pos="'+esc(id)+'" style="margin-top:4px"><option value="">No position</option>'+POS.map(p=>'<option'+(pm[id]===p?' selected':'')+'>'+esc(p)+'</option>').join('')+'</select>')});
+ ml.querySelectorAll('[data-pos]').forEach(s=>{let prev=s.value;s.onchange=async()=>{const x=await SB.from('profiles').update({position:s.value||null}).eq('id',s.dataset.pos).select();
+  if(x.error||!x.data||!x.data.length){toast(x.error?x.error.message:'Not allowed.');s.value=prev}else{prev=s.value;toast('Position updated')}}})};
+
 initCtl();renderAll();$('mem').onclick=openMembers;initMon();initAuth();
 </script></body></html>
