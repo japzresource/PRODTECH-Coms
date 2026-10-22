@@ -476,8 +476,16 @@ function startLobby(){if(LB)return;LB=SB.channel('lobby',{config:{presence:{key:
  LB.on('presence',{event:'sync'},()=>{const c={};Object.values(LB.presenceState()).forEach(a=>{const m=a[a.length-1],r=m&&m.room;if(r)c[r]=(c[r]||0)+1});LV=c;renderCh()});
  LB.subscribe(st=>{if(st==='SUBSCRIBED')lobbyTrack(cur&&cur.code)})}
 let P={},TILES={},screenStream=null,loaded=false;
-const ICE={iceCandidatePoolSize:4,iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},
- {urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turns:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}]};
+const ICE={iceCandidatePoolSize:4,iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun.relay.metered.ca:80'},{urls:'turn:global.relay.metered.ca:80',username:'d6d75d6e25dd33d8627a2e19',credential:'PBHHMH/CahUrqVdo'},{urls:'turn:global.relay.metered.ca:80?transport=tcp',username:'d6d75d6e25dd33d8627a2e19',credential:'PBHHMH/CahUrqVdo'},{urls:'turn:global.relay.metered.ca:443',username:'d6d75d6e25dd33d8627a2e19',credential:'PBHHMH/CahUrqVdo'},{urls:'turns:global.relay.metered.ca:443?transport=tcp',username:'d6d75d6e25dd33d8627a2e19',credential:'PBHHMH/CahUrqVdo'}]};
+/* ===== RELAY (TURN) SETUP: paste your two values from metered.ca here ===== */
+const TURN_APP='';   /* e.g. 'prodtech'  (the part before .metered.live) */
+const TURN_KEY='';   /* your API key */
+let TURNP=null;
+function loadTurn(){return TURNP||(TURNP=(async()=>{if(!TURN_APP||!TURN_KEY)return;
+ try{const c=new AbortController();setTimeout(()=>c.abort(),6000);
+  const r=await fetch('https://'+TURN_APP+'.metered.live/api/v1/turn/credentials?apiKey='+encodeURIComponent(TURN_KEY),{signal:c.signal}),l=await r.json();
+  if(Array.isArray(l)&&l.length)ICE.iceServers=[{urls:'stun:stun.l.google.com:19302'},...l];else throw 0}
+ catch(e){TURNP=null;toast('Could not load the relay server. Check TURN_APP and TURN_KEY.')}})())}
 async function enter(c){cur=c;$('cn').textContent='🔊 '+c.name;$('cc').textContent='code '+c.code;$('call').classList.add('open');bump(c,1);lobbyTrack(c.code);
  closePeers();$('grid').innerHTML='';$('cmsgs').innerHTML='';TILES={};MYKEY=Math.random().toString(36).slice(2,10);
  {const r=await getMedia();stream=r.s;icons();if(r.why)toast(r.why)}
@@ -557,14 +565,16 @@ function syncBig(){const w=$('bigwrap'),v=$('bigv');
  if(hasV){if(v.srcObject!==ms)v.srcObject=ms;v.style.display='block';const pl=v.play&&v.play();pl&&pl.catch&&pl.catch(()=>{})}else{v.srcObject=null;v.style.display='none'}
  $('bigph').style.display=hasV?'none':'grid';
  $('bign').textContent=TILES[SEL].querySelector('.nm').textContent;w.style.display='block';markSel()}
-const _dg=drawGrid;drawGrid=function(){_dg();syncBig()};
+const _dg=drawGrid;drawGrid=function(){_dg();
+ Object.keys(TILES).forEach(k=>{if(k==='me')return;const p=P[k];if(!p)return;const nm=TILES[k].querySelector('.nm'),vt=p.stream.getVideoTracks().length;nm.textContent=nm.textContent.split(' · ')[0]+' · '+(p.st||(vt?'live':'connected, no video'))});
+ syncBig()};
 $('grid').addEventListener('click',e=>{const t=e.target.closest('.tile');if(!t)return;const k=Object.keys(TILES).find(x=>TILES[x]===t);if(k){SEL=k;syncBig()}});
 $('bigx').onclick=()=>{SEL=null;syncBig()};
-const _en=enter;enter=function(c){SEL=null;$('monhost').appendChild($('monv'));$('monv').style.display='block';$('monback').style.display='none';renderMon();return _en(c)};
+const _en=enter;enter=async function(c){await loadTurn();SEL=null;$('monhost').appendChild($('monv'));$('monv').style.display='block';$('monback').style.display='none';renderMon();return _en(c)};
 const _lvx=$('leave').onclick;$('leave').onclick=()=>{_lvx();SEL=null;syncBig();document.body.insertBefore($('monv'),$('ctx'));$('monv').style.display='none';$('monback').style.display=''};
 
 /* --- @department chat: "@visual message" goes to that department's call --- */
-const _sl=startLobby;startLobby=function(){_sl();startX()};
+const _sl=startLobby;startLobby=function(){_sl();startX();loadTurn()};
 function startX(){if(XC)return;XC=SB.channel('xchat',{config:{broadcast:{self:false}}});
  XC.on('broadcast',{event:'x'},e=>{const m=e.payload;if(!m||!cur||m.fc===cur.code||!(m.codes||[]).includes(cur.code))return;xMsg(m,false)}).subscribe()}
 function xMsg(m,out){const d=document.createElement('div'),h=document.createElement('b'),w=document.createElement('div'),t=document.createElement('div');
