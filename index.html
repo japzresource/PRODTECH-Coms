@@ -97,14 +97,50 @@ tr.now td{background:#173a73}tr.nx td{background:#1d2a14}
 .alink{background:none;border:0;color:var(--bl);cursor:pointer;font:inherit;padding:0;margin-top:6px}
 .rmv{background:none;border:0;color:var(--bad);cursor:pointer;font-size:12px;padding:0;margin-top:2px;text-align:left}
 .md select{background:#14171c;color:var(--tx);border:1px solid var(--ln);padding:7px;border-radius:4px;font:inherit}
+.pn{height:calc(100vh - 262px)}
+.bn{display:grid;grid-template-columns:1fr 1fr;align-items:center;height:96px;background:#000;border:6px solid #fff;border-radius:22px;margin:16px 5vw 0;overflow:hidden}
+.bn .c{padding:0 20px;text-align:center;min-width:0}.bn .c+.c{border-left:2px solid var(--ln)}
+.bn small{display:block;font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}
+.bn b{display:block;font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(22px,3.2vw,42px);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#call{grid-template-rows:auto auto 1fr auto}
+#call .bn{grid-column:1/3;margin:0;border:0;border-bottom:2px solid #111;border-radius:0;height:92px}
+@media(max-width:800px){#call .bn{grid-column:1}}
+#side{display:flex;flex-direction:column;overflow:hidden;gap:10px}
+#segwrap{overflow:auto;flex:0 1 52%;min-height:120px}
+#chat{flex:1;display:flex;flex-direction:column;min-height:140px;border-top:1px solid #111;padding-top:10px;min-height:0}
+#cmsgs{flex:1;overflow:auto;font-size:14px;line-height:1.4}#cmsgs div{margin-bottom:6px;word-break:break-word}#cmsgs b{color:var(--ac)}
+#cin{display:flex;gap:6px;margin-top:8px}#cin input{flex:1;min-width:0;background:#1e1f22;color:#fff;border:1px solid #111;border-radius:4px;padding:9px;font:inherit}
+.mb{max-width:1500px;margin:0 auto;padding:20px 5vw 60px}
+.mbh{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.mbh h2{margin:0;font-family:Orbitron,sans-serif;letter-spacing:.06em}
+.mbg{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:16px;align-items:start}
+.mcol{display:flex;flex-direction:column;gap:16px;min-width:0}
+.mp{background:var(--pn);border:1px solid var(--ln);padding:14px}
+.mp h3{margin:0 0 10px;font-weight:500;font-size:17px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.mp h5{margin:14px 0 6px;color:var(--mu);font-weight:500;letter-spacing:.1em;font-size:12px;text-transform:uppercase}
+.eqg{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.eq{background:#14171c;border:1px solid var(--ln);border-left:4px solid var(--ok);padding:10px;display:flex;flex-direction:column;gap:6px}
+.eq.offline{border-left-color:#6b7280}.eq.out{border-left-color:var(--bad)}
+.eq .eh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pill,.tg{font-family:'Share Tech Mono',monospace;font-size:12px;padding:2px 7px;border-radius:10px;background:#12351f;color:var(--ok)}
+.eq.offline .pill{background:#2a2d33;color:#9aa3b5}.eq.out .pill,.tg.reported{background:#3b1518;color:var(--bad)}
+.tg.monitoring{background:#3a2f10;color:var(--ac)}
+.mp select,.mp input{background:#0e1115;color:var(--tx);border:1px solid var(--ln);padding:8px;border-radius:4px;font:inherit;min-width:0}
+.mi{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}.mi input,.mi select{flex:1;min-width:110px}
+.mr{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--ln)}
+.chip{display:inline-block;background:#1b2330;border:1px solid var(--ln);border-radius:10px;padding:1px 8px;font-size:12px;margin:2px 4px 0 0;font-family:'Share Tech Mono',monospace}
+.oi{background:#2a1215;border:1px solid #6b2127;border-left:4px solid var(--bad);padding:9px 10px;margin-bottom:8px;cursor:context-menu;user-select:none;-webkit-user-select:none}
+.lg{padding:9px 0;border-bottom:1px solid var(--ln);font-size:15px}.hint{color:var(--mu);font-size:12px}
+#ctx{position:fixed;display:none;background:#1b1f26;border:1px solid var(--ln);z-index:90;padding:4px;box-shadow:0 6px 20px #000a}
+#ctx button{display:block;background:none;border:0;color:var(--tx);padding:9px 14px;font:inherit;cursor:pointer;width:100%;text-align:left}#ctx button:hover{background:var(--bl)}
+@media(max-width:900px){.mbg{grid-template-columns:1fr}}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0"></script></head><body>
 <div id="auth"><div class="acard"><div class="alogo">PRODTECH</div><div class="asub mono">COMMS · MEMBERS ONLY</div><div class="atabs"><button id="tIn" class="on">Sign in</button><button id="tUp">Create account</button></div><label style="display:none">Display name<input id="aname" maxlength="30" autocomplete="nickname"></label><label>Email<input id="aemail" type="email" autocomplete="email"></label><label>Password<input id="apass" type="password" autocomplete="current-password"></label><button class="b" id="abtn">Sign in</button><p id="amsg" role="status"></p><button class="alink" id="aforgot">Forgot password?</button></div></div>
-<header><div style="display:flex;align-items:center;gap:12px"><button id="user" class="mono">Username</button><button id="so" class="mono">Sign out</button></div><img class="logo" alt="PRODTECH" src="data:image/png;base64,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"><div style="display:flex;align-items:center;gap:18px"><button id="mem" style="display:none">Members</button><button id="about">About</button></div></header>
-<div id="home"><main>
+<header><div style="display:flex;align-items:center;gap:12px"><button id="user" class="mono">Username</button><button id="so" class="mono">Sign out</button></div><img class="logo" alt="PRODTECH" src="data:image/png;base64,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"><div style="display:flex;align-items:center;gap:18px"><button id="monb">Monitor</button><button id="mem" style="display:none">Members</button><button id="about">About</button></div></header>
+<div id="home"><div class="bn"></div><main>
 <section class="pn"><h3>Departments</h3><div class="body" id="chs"></div><button class="add" id="addCh">Add</button></section>
-<section style="display:flex;flex-direction:column;height:calc(100vh - 150px);min-height:520px">
+<section style="display:flex;flex-direction:column;height:calc(100vh - 262px);min-height:520px">
  <div class="clock"><div class="t" id="tm"></div><div class="d" id="dt"></div></div>
- <div class="pn pg"><div class="body" style="padding:0"><table><thead><tr><th>PROGRAM:</th><th>DELEGATE:</th></tr></thead><tbody id="pgb"></tbody></table></div><button class="add" id="addPg">Add</button></div>
+ <div class="pn pg"><div class="body" style="padding:0"><table><thead><tr><th>TIME:</th><th>PROGRAM:</th><th>DELEGATE:</th></tr></thead><tbody id="pgb"></tbody></table></div><button class="add" id="addPg">Add</button></div>
 </section>
 <section class="pn"><h3>NEWS FEED</h3><div class="body" id="nws"></div><button class="add" id="addNw">Add</button></section>
 </main></div>
@@ -120,16 +156,33 @@ tr.now td{background:#173a73}tr.nx td{background:#1d2a14}
 <div class="card" style="margin-top:24px"><b>Credits</b><br><br>Created by <b>JAPZ James</b> · 2026<br>Owner of <b>Crélinc Production Company</b><br>Head of <b>IV PRODTECH</b> and <b>Patience United</b></div>
 <p><button class="b" id="back">← Back to dashboard</button></p></div></div>
 
+<div id="monv" style="display:none"><div class="mb">
+<div class="mbh"><h2>MONITOR BOARD</h2><button class="b g" id="monback">← Back to dashboard</button></div>
+<div class="mbg">
+<div class="mcol">
+ <section class="mp"><h3>Equipment <span id="eqadd" style="display:none;gap:6px"><select id="eqK"><option value="wmic">Wireless mic</option><option value="wired">Wired mic</option><option value="iem">In-ear</option></select><button class="b" id="eqA">+ Add</button></span></h3><div id="eqs"></div></section>
+ <section class="mp"><h3>Status Log</h3>
+  <div class="mi"><select id="lgM"></select><input id="lgT" placeholder="What happened? e.g. IEM is broken"></div>
+  <div class="mi"><select id="lgI"></select><select id="lgO"></select><select id="lgS"><option value="reported">Reported</option><option value="replaced">Replaced</option><option value="fixed">Fixed</option><option value="monitoring">Monitoring</option></select><button class="b" id="lgA">Log</button></div>
+  <div class="hint" style="margin-bottom:8px">IN = equipment going in, OUT = equipment coming out. Choosing "Replaced" moves the musician to the IN equipment and marks the OUT equipment as down.</div>
+  <div id="lgs"></div></section>
+</div>
+<div class="mcol">
+ <section class="mp"><h3>Musicians</h3><div class="mi"><input id="muN" placeholder="Name" maxlength="40"><input id="muR" placeholder="Part (e.g. Keys)" maxlength="30"><button class="b" id="muA">Add</button></div><div id="mus"></div></section>
+ <section class="mp"><h3>OUT Systems</h3><div class="mi"><input id="ouN" list="eqlist" placeholder="What is down?" maxlength="60"><button class="b" id="ouA">Report</button></div><datalist id="eqlist"></datalist><div id="ous"></div><div class="hint">Do not use anything listed here. Right-click an item (or press and hold on a phone) to claim it is fixed.</div></section>
+</div></div></div></div>
+<div id="ctx"><button id="ctxFix">✔ Claim as fixed</button></div>
 <div id="call"><div class="top"><b id="cn" style="font-size:20px"></b><span class="mono" id="cc"></span></div>
+<div class="bn"></div>
 <div id="grid"></div>
-<aside id="side"><h4>PROGRAM SEGMENTS</h4><div class="sig" id="sig"></div><div id="sgs"></div><button class="b" style="width:100%;margin-top:8px" id="nextSg">Next segment ▶</button></aside>
+<aside id="side"><div id="segwrap"><h4>PROGRAM SEGMENTS</h4><div class="sig" id="sig"></div><div id="sgs"></div><button class="b" style="width:100%;margin-top:8px" id="nextSg">Next segment ▶</button></div><div id="chat"><h4>CHAT</h4><div id="cmsgs"></div><div id="cin"><input id="cmsg" placeholder="Message the call…" maxlength="300"><button class="b" id="csend">Send</button></div></div></aside>
 <div id="ctl"><div class="grp"><button class="ib" id="mic" aria-label="Mute microphone"></button><button class="ib sm" id="micM" aria-label="Audio settings"></button><button class="ib" id="cam" aria-label="Turn camera on or off"></button><button class="ib sm" id="camM" aria-label="Camera settings"></button></div><div class="grp"><button class="ib" id="scr" aria-label="Share screen"></button><button class="ib" id="more" aria-label="Settings"></button></div><button class="lvb" id="leave" aria-label="Leave call"></button></div><div id="pop"></div></div>
 <div id="toast"></div>
 
 <script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const S={ch:[],pg:[],nw:[],mi:[],seg:{idx:-1}};let DB=null,ROOM=null,ME={name:'Operator'},cur=null,R=null,stream=null;
+const S={ch:[],pg:[],nw:[],mi:[],eq:[],mu:[],ou:[],lg:[],seg:{idx:-1}};let DB=null,ROOM=null,ME={name:'Operator'},cur=null,R=null,stream=null;
 const LOGO='<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#fff" stroke-width="6"/><path d="M30 38h36q8 0 8 8t-8 8H34M34 54l32 22" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/></svg>';
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],p2=n=>String(n).padStart(2,'0');
 const fmt=t=>{if(!t)return'— —';const d=new Date(t);return p2(d.getDate())+' '+MON[d.getMonth()]+' '+p2(d.getHours())+':'+p2(d.getMinutes())};
@@ -141,7 +194,7 @@ setInterval(tick,1000);tick();
 function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(toast.x);toast.x=setTimeout(()=>e.style.display='none',t.length>60?9000:3500)}
 function modal(html,mount){const o=document.createElement('div');o.className='ov';o.innerHTML='<div class="md">'+html+'</div>';document.body.appendChild(o);o.addEventListener('mousedown',e=>{if(e.target===o)o.remove()});mount&&mount(o,()=>o.remove());return o}
 /* data layer */
-const ARR={channels:'ch',program:'pg',news:'nw',mine:'mi'};
+const ARR={channels:'ch',program:'pg',news:'nw',mine:'mi',equip:'eq',musicians:'mu',outs:'ou',monlog:'lg'};
 function errMsg(e){return e&&(e.code==='42501'||/row-level security/i.test(e.message||''))?'Only operators can do that.':'Save failed: '+((e&&e.message)||e)}
 async function save(col,obj){const a=S[ARR[col]],i=a.findIndex(x=>x.id===obj.id);i<0?a.push(obj):a[i]=obj;renderAll();
  try{await DBX.set(col,obj.id,obj)}catch(e){toast(errMsg(e))}}
@@ -166,7 +219,7 @@ async function boot(){
  loaded=true;renderAll();
  SB.channel('docs-live').on('postgres_changes',{event:'*',schema:'public',table:'docs'},applyChange).subscribe()}
 const sorted=()=>[...S.pg].sort((a,b)=>(a.o||0)-(b.o||0));
-function renderAll(){renderCh();renderPg();renderNw();renderSeg()}
+function renderAll(){renderCh();renderPg();renderNw();renderSeg();renderMon()}
 function renderCh(){const c=$('chs'),op=isOp();
  if(!loaded){c.innerHTML='<div class="empty">Loading…</div>';return}
  const mine=myCh(),list=(op?[...S.ch]:S.ch.filter(x=>mine.has(x.id))).sort((a,b)=>(a.o||0)-(b.o||0));
@@ -176,7 +229,7 @@ function renderCh(){const c=$('chs'),op=isOp();
  c.querySelectorAll('[data-dl]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();if(confirm('Delete this department for everyone?')){del('channels',b.dataset.dl);SB.from('channel_pass').delete().eq('id',b.dataset.dl).then(()=>{})}});
  c.querySelectorAll('[data-rm]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();del('mine',UID+'_'+b.dataset.rm)})}
 function seed(){['Audio','Visual','Lighting','Broadcasting','Networking','Help Center'].forEach((n,i)=>{const id='seed-'+n.slice(0,3).toLowerCase();SB.from('channel_pass').upsert({id,pass:'1234'}).then(r=>{if(r.error)toast('Could not save password: '+r.error.message)});save('channels',{id,name:n+(n==='Help Center'?'':' Department'),code:n.slice(0,3).toUpperCase()+(100+i*7),live:0,last:0,o:i})})}
-function renderPg(){const s=sorted();$('pgb').innerHTML=s.length?s.map((x,i)=>`<tr class="${i===S.seg.idx?'now':i===S.seg.idx+1?'nx':''}"><td>${esc(x.t)}</td><td>${esc(x.d)}</td></tr>`).join(''):'<tr><td colspan="2" class="empty">No program yet. Press Add.</td></tr>'}
+function renderPg(){const s=sorted();$('pgb').innerHTML=s.length?s.map((x,i)=>`<tr class="${i===S.seg.idx?'now':i===S.seg.idx+1?'nx':''}"><td style="width:120px">${esc(fmtT(x.tm))}</td><td>${esc(x.t)}</td><td>${esc(x.d)}</td></tr>`).join(''):'<tr><td colspan="3" class="empty">No program yet. Press Add.</td></tr>'}
 function renderNw(){const s=[...S.nw].sort((a,b)=>(b.ts||0)-(a.ts||0));$('nws').innerHTML=s.length?s.map(x=>`<div class="nw">${x.img?`<img src="${esc(x.img)}" alt="">`:'<div class="th" style="width:110px;height:78px">'+LOGO+'</div>'}<div class="ci"><b>${esc(x.title)}</b><span style="color:var(--mu)">${esc(x.date)}</span><span style="font-family:Rajdhani;color:#cfd6e2">${esc(x.body||'')}</span>${isOp()?`<button data-x="${esc(x.id)}">remove</button>`:''}</div></div>`).join(''):'<div class="empty">No news yet.</div>';
  $('nws').querySelectorAll('button').forEach(b=>b.onclick=()=>del('news',b.dataset.x))}
 /* channels */
@@ -193,12 +246,12 @@ function askJoin(c){if(!c)return;modal(`<h2>${esc(c.name)}</h2><label>Password</
 /* program */
 $('addPg').onclick=()=>{let rows=sorted().map(x=>({...x}));const gone=[];
  modal(`<h2>Edit Program Proper</h2><div id="rw"></div><div class="btns" style="justify-content:flex-start"><button class="b g" id="ar">+ Row</button><button class="b g" id="imp">Paste from Google Sheets</button></div><div class="btns"><button class="b g" id="x">Cancel</button><button class="b" id="sv">Save</button></div>`,(o,close)=>{
-  const draw=()=>{$('rw').innerHTML=rows.map((r,i)=>`<div class="er"><input data-i="${i}" data-k="t" value="${esc(r.t)}" placeholder="Program"><input data-i="${i}" data-k="d" value="${esc(r.d)}" placeholder="Delegate"><button class="b r" data-del="${i}">✕</button></div>`).join('');
+  const draw=()=>{$('rw').innerHTML=rows.map((r,i)=>`<div class="er"><input type="time" data-i="${i}" data-k="tm" value="${esc(r.tm||'')}" style="width:128px;flex:none" aria-label="Time"><input data-i="${i}" data-k="t" value="${esc(r.t)}" placeholder="Program"><input data-i="${i}" data-k="d" value="${esc(r.d)}" placeholder="Delegate"><button class="b r" data-del="${i}">✕</button></div>`).join('');
    $('rw').querySelectorAll('input').forEach(e=>e.oninput=()=>rows[e.dataset.i][e.dataset.k]=e.value);
    $('rw').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{const r=rows.splice(b.dataset.del,1)[0];gone.push(r.id);draw()})};draw();
-  $('ar').onclick=()=>{rows.push({id:uid(),t:'',d:''});draw()};
-  $('imp').onclick=()=>{const t=prompt('Select your Program and Delegate cells in Google Sheets, copy, then paste here:');if(!t)return;t.split(/\r?\n/).filter(l=>l.trim()).forEach(l=>{const [a,b]=l.split('\t');rows.push({id:uid(),t:(a||'').trim(),d:(b||'').trim()})});draw()};
-  $('x').onclick=close;$('sv').onclick=()=>{rows.filter(r=>r.t.trim()).forEach((r,i)=>save('program',{id:r.id,t:r.t.trim(),d:r.d.trim(),o:i}));gone.forEach(id=>del('program',id));close()}})};
+  $('ar').onclick=()=>{rows.push({id:uid(),tm:'',t:'',d:''});draw()};
+  $('imp').onclick=()=>{const t=prompt('Copy your Time, Program and Delegate cells from Google Sheets (or just Program and Delegate), then paste here:');if(!t)return;t.split(/\r?\n/).filter(l=>l.trim()).forEach(l=>{const p=l.split('\t');rows.push(p.length>=3?{id:uid(),tm:parseT(p[0]),t:p[1].trim(),d:p[2].trim()}:{id:uid(),tm:'',t:(p[0]||'').trim(),d:(p[1]||'').trim()})});draw()};
+  $('x').onclick=close;$('sv').onclick=()=>{rows.filter(r=>r.t.trim()).forEach((r,i)=>save('program',{id:r.id,tm:r.tm||'',t:r.t.trim(),d:r.d.trim(),o:i}));gone.forEach(id=>del('program',id));close()}})};
 /* news */
 $('addNw').onclick=()=>modal(`<h2>Post news</h2><label>Name of the news</label><input id="n"><label>Date released</label><input id="d" type="date" value="${new Date().toISOString().slice(0,10)}"><label>Details</label><textarea id="b" rows="3"></textarea><label>Image</label><input id="i" type="file" accept="image/*"><div class="btns"><button class="b g" id="x">Cancel</button><button class="b" id="go">Post</button></div>`,(o,close)=>{
  $('x').onclick=close;$('go').onclick=async()=>{const n=$('n').value.trim();if(!n)return toast('Add a title');let img='';const f=$('i').files[0];
@@ -206,7 +259,7 @@ $('addNw').onclick=()=>modal(`<h2>Post news</h2><label>Name of the news</label><
   save('news',{id:uid(),title:n,date:$('d').value,body:$('b').value,img,ts:Date.now()});close()}});
 /* user + about */
 $('user').onclick=()=>{const n=prompt('Display name:',ME.name);if(n&&n.trim()){ME.name=n.trim();$('user').textContent=ME.name;try{SB.auth.updateUser({data:{name:ME.name}})}catch(e){}}};
-$('about').onclick=()=>{$('home').style.display='none';$('aboutv').style.display='block'};$('back').onclick=()=>{$('aboutv').style.display='none';$('home').style.display='block'};
+$('about').onclick=()=>showView('aboutv');$('back').onclick=()=>showView('home');
 /* call */
 const bump=(c,d)=>{if(d<1)return;const x=S.ch.find(z=>z.id===c.id);if(x){x.last=Date.now();renderCh()}SB.rpc('touch_channel',{cid:c.id}).then(()=>{},()=>{})};
 const sv=p=>'<svg viewBox="0 0 24 24">'+p+'</svg>',SL='<path d="M4 4l16 16"/>';
@@ -309,6 +362,52 @@ async function openMembers(){const r=await SB.from('profiles').select('id,name,e
    const x=await SB.from('profiles').update({banned:ban}).eq('id',b.dataset.ban).select();if(x.error||!x.data||!x.data.length)return toast(x.error?x.error.message:'Not allowed.');toast(ban?'Member banned':'Member unbanned');close();openMembers()});
   $('ml').querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this member? Their account will be deleted.'))return;
    const x=await SB.rpc('remove_member',{target:b.dataset.del});if(x.error)return toast(x.error.message);toast('Member removed');close();openMembers()})})}
+const fmtT=t=>{if(!/^\d{1,2}:\d{2}$/.test(t||''))return'';let[h,m]=t.split(':').map(Number);const ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+String(m).padStart(2,'0')+' '+ap};
+const parseT=x=>{const m=String(x||'').trim().match(/^(\d{1,2})(?::(\d{2}))?\s*([ap])\.?m?\.?$/i)||String(x||'').trim().match(/^(\d{1,2}):(\d{2})$/);if(!m)return'';let h=+m[1];const mi=+(m[2]||0),ap=(m[3]||'').toLowerCase();if(ap==='p'&&h<12)h+=12;if(ap==='a'&&h===12)h=0;if(h>23||mi>59)return'';return String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0')};
+const KINDS={wmic:'Wireless Mic',wired:'Wired Mic',iem:'In-Ear'};let ctxId='',ctxAt=0;
+const muName=id=>{const m=S.mu.find(x=>x.id===id);return m?m.name:''},isOut=e=>S.ou.some(o=>o.eq===e.id);
+function showView(v){['home','aboutv','monv'].forEach(i=>$(i).style.display=i===v?'block':'none');if(v==='monv')renderMon()}
+function addChat(m){if(!m)return;const d=document.createElement('div'),b=document.createElement('b');b.textContent=(m.n||'?')+': ';d.appendChild(b);d.appendChild(document.createTextNode(m.t||''));const c=$('cmsgs');c.appendChild(d);while(c.children.length>200)c.firstChild.remove();c.scrollTop=c.scrollHeight}
+function sendChat(){const t=$('cmsg').value.trim();if(!t||!R)return;const m={n:ME.name,t:t.slice(0,300)};try{R.send({type:'broadcast',event:'chat',payload:m})}catch(e){}addChat(m);$('cmsg').value=''}
+function addLog(o){save('monlog',{id:uid(),ts:Date.now(),by:ME.name,mu:o.mu||'',note:o.note||'',inN:o.inN||'',outN:o.outN||'',inId:o.inId||'',outId:o.outId||'',st:o.st||'reported'})}
+function fixOut(id){const o=S.ou.find(x=>x.id===id);if(!o)return;del('outs',id);addLog({st:'fixed',note:o.name+' is fixed'})}
+function showCtx(x,y,id){ctxId=id;ctxAt=Date.now();const c=$('ctx');c.style.display='block';c.style.left=Math.min(x,innerWidth-190)+'px';c.style.top=Math.min(y,innerHeight-60)+'px'}
+function seedEq(){[['wmic','Wireless Mic 1'],['wmic','Wireless Mic 2'],['wired','Wired Mic 1'],['wired','Wired Mic 2'],...[1,2,3,4,5,6,7,8].map(n=>['iem','In-Ear '+n])].forEach((x,i)=>save('equip',{id:'eq-'+x[1].toLowerCase().replace(/[^a-z0-9]/g,''),kind:x[0],label:x[1],status:'online',to:'',o:i}))}
+function keepSel(id,html){const e=$(id),v=e.value;e.innerHTML=html;if([...e.options].some(o=>o.value===v))e.value=v}
+function renderMon(){if(!$('monv')||$('monv').style.display!=='block')return;const op=isOp();$('eqadd').style.display=op?'flex':'none';
+ const mus=[...S.mu].sort((a,b)=>(a.name||'').localeCompare(b.name||'')),eqs=[...S.eq].sort((a,b)=>(a.o||0)-(b.o||0));
+ const opts=sel=>'<option value="">Unassigned</option>'+mus.map(m=>`<option value="${esc(m.id)}"${m.id===sel?' selected':''}>${esc(m.name)}</option>`).join('');
+ $('eqs').innerHTML=S.eq.length?[['wmic','Wireless mics'],['wired','Wired mics'],['iem','In-ear monitors']].map(([k,t])=>{const l=eqs.filter(e=>e.kind===k);return `<h5>${t}</h5><div class="eqg">${l.length?l.map(e=>{const o=isOut(e),st=o?'out':(e.status==='offline'?'offline':'online');return `<div class="eq ${st}"><div class="eh"><b>${esc(e.label)}</b><span class="pill">${st.toUpperCase()}</span></div><select data-to="${esc(e.id)}" aria-label="Delegated to">${opts(e.to)}</select><select data-st="${esc(e.id)}"${o?' disabled':''} aria-label="Status"><option value="online"${st!=='offline'?' selected':''}>Online</option><option value="offline"${st==='offline'?' selected':''}>Offline</option></select>${op?`<button class="rmv" data-rme="${esc(e.id)}">remove</button>`:''}</div>`}).join(''):'<div class="empty" style="grid-column:1/-1;padding:12px">None</div>'}</div>`}).join(''):`<div class="empty">No equipment yet.${op?'<br><br><button class="b g" id="eqSeed">Load default equipment</button>':''}</div>`;
+ if($('eqSeed'))$('eqSeed').onclick=seedEq;
+ $('eqs').querySelectorAll('[data-to]').forEach(s=>s.onchange=()=>{const e=S.eq.find(x=>x.id===s.dataset.to);if(e)save('equip',{...e,to:s.value})});
+ $('eqs').querySelectorAll('[data-st]').forEach(s=>s.onchange=()=>{const e=S.eq.find(x=>x.id===s.dataset.st);if(e)save('equip',{...e,status:s.value})});
+ $('eqs').querySelectorAll('[data-rme]').forEach(b=>b.onclick=()=>{if(confirm('Remove this equipment?'))del('equip',b.dataset.rme)});
+ $('mus').innerHTML=mus.length?mus.map(m=>{const mine=eqs.filter(e=>e.to===m.id);return `<div class="mr"><span style="min-width:0"><b>${esc(m.name)}</b>${m.part?` <small style="color:var(--mu)">· ${esc(m.part)}</small>`:''}<br>${mine.length?mine.map(e=>`<span class="chip">${esc(e.label)}</span>`).join(''):'<small style="color:var(--mu)">No equipment</small>'}</span>${op||m.by===UID?`<button class="rmv" data-rmm="${esc(m.id)}">remove</button>`:''}</div>`}).join(''):'<div class="empty" style="padding:12px">No musicians yet.</div>';
+ $('mus').querySelectorAll('[data-rmm]').forEach(b=>b.onclick=()=>{if(!confirm('Remove this musician?'))return;S.eq.filter(e=>e.to===b.dataset.rmm).forEach(e=>save('equip',{...e,to:''}));del('musicians',b.dataset.rmm)});
+ $('ous').innerHTML=S.ou.length?[...S.ou].sort((a,b)=>(b.ts||0)-(a.ts||0)).map(o=>`<div class="oi" data-o="${esc(o.id)}"><b>${esc(o.name)}</b>${o.note?`<br><small>${esc(o.note)}</small>`:''}<br><small style="color:var(--mu)">by ${esc(o.by||'?')} · ${esc(new Date(o.ts||0).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}))}</small></div>`).join(''):'<div class="empty" style="padding:12px">All systems go.</div>';
+ $('ous').querySelectorAll('.oi').forEach(el=>{el.oncontextmenu=ev=>{ev.preventDefault();showCtx(ev.clientX,ev.clientY,el.dataset.o)};let t;el.ontouchstart=ev=>{const p=ev.touches[0];t=setTimeout(()=>showCtx(p.clientX,p.clientY,el.dataset.o),550)};el.ontouchend=el.ontouchmove=()=>clearTimeout(t)});
+ $('eqlist').innerHTML=eqs.map(e=>`<option value="${esc(e.label)}">`).join('');
+ keepSel('lgM','<option value="">Musician (optional)</option>'+mus.map(m=>`<option value="${esc(m.id)}">${esc(m.name)}</option>`).join(''));
+ const eo=ph=>`<option value="">${ph}</option>`+eqs.map(e=>`<option value="${esc(e.id)}">${esc(e.label)}</option>`).join('');
+ keepSel('lgI',eo('IN (equipment)'));keepSel('lgO',eo('OUT (equipment)'));
+ $('lgs').innerHTML=S.lg.length?[...S.lg].sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,60).map(l=>`<div class="lg"><small class="mono" style="color:var(--mu)">${esc(new Date(l.ts||0).toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}))} · ${esc(l.by||'')}</small><br>${l.mu?`<b>${esc(l.mu)}</b> `:''}${esc(l.note||'')}${l.inN?` · <span class="mono">IN</span> ${esc(l.inN)}`:''}${l.outN?` · <span class="mono">OUT</span> ${esc(l.outN)}`:''} <span class="tg ${esc(l.st)}">${esc((l.st||'').toUpperCase())}</span></div>`).join(''):'<div class="empty" style="padding:12px">No log entries yet.</div>'}
+function initMon(){$('monb').onclick=()=>showView('monv');$('monback').onclick=()=>showView('home');
+ $('csend').onclick=sendChat;$('cmsg').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
+ const nextLabel=k=>{let n=1;while(S.eq.some(e=>e.label===KINDS[k]+' '+n))n++;return KINDS[k]+' '+n};
+ $('eqA').onclick=()=>{if(!isOp())return;const k=$('eqK').value;save('equip',{id:uid(),kind:k,label:nextLabel(k),status:'online',to:'',o:S.eq.reduce((m,e)=>Math.max(m,e.o||0),0)+1})};
+ $('muA').onclick=()=>{const n=$('muN').value.trim();if(!n)return toast('Type a name');save('musicians',{id:uid(),name:n,part:$('muR').value.trim(),by:UID,ts:Date.now()});$('muN').value='';$('muR').value=''};
+ $('muN').addEventListener('keydown',e=>{if(e.key==='Enter')$('muA').click()});
+ $('ouA').onclick=()=>{const n=$('ouN').value.trim();if(!n)return toast('Type what is down');const e=S.eq.find(x=>x.label.toLowerCase()===n.toLowerCase());
+  if(e&&isOut(e))return toast(e.label+' is already listed.');save('outs',{id:uid(),name:e?e.label:n,eq:e?e.id:'',note:'',by:ME.name,ts:Date.now()});addLog({st:'reported',note:(e?e.label:n)+' is down'});$('ouN').value=''};
+ $('ouN').addEventListener('keydown',e=>{if(e.key==='Enter')$('ouA').click()});
+ $('lgA').onclick=()=>{const mu=$('lgM').value,inId=$('lgI').value,outId=$('lgO').value,st=$('lgS').value,note=$('lgT').value.trim();
+  if(!note&&!inId&&!outId)return toast('Add a note or pick equipment');
+  const inE=S.eq.find(e=>e.id===inId),outE=S.eq.find(e=>e.id===outId);
+  if(st==='replaced'){if(!inE||!outE)return toast('Replaced needs both IN and OUT equipment');if(inE.id===outE.id)return toast('IN and OUT must be different');if(isOut(inE))return toast(inE.label+' is marked OUT. Pick working equipment.');
+   save('equip',{...inE,to:outE.to||mu||'',status:'online'});save('equip',{...outE,to:''});if(!isOut(outE))save('outs',{id:uid(),name:outE.label,eq:outE.id,note:'Replaced by '+inE.label,by:ME.name,ts:Date.now()})}
+  addLog({mu:muName(mu),note,inN:inE?inE.label:'',outN:outE?outE.label:'',inId,outId,st});$('lgT').value='';$('lgI').value='';$('lgO').value=''};
+ $('ctxFix').onclick=()=>{fixOut(ctxId);$('ctx').style.display='none'};
+ document.addEventListener('click',()=>{if(Date.now()-ctxAt>400)$('ctx').style.display='none'});document.addEventListener('scroll',()=>{$('ctx').style.display='none'},true)}
 let LV={},LB=null;const LBKEY=Math.random().toString(36).slice(2,10);
 function lobbyTrack(room){try{LB&&LB.track({room:room||null,name:ME.name})}catch(e){}}
 function startLobby(){if(LB)return;LB=SB.channel('lobby',{config:{presence:{key:LBKEY}}});
@@ -318,10 +417,10 @@ let P={},TILES={},screenStream=null,loaded=false;
 const ICE={iceCandidatePoolSize:4,iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},
  {urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turns:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}]};
 async function enter(c){cur=c;$('cn').textContent='🔊 '+c.name;$('cc').textContent='code '+c.code;$('call').classList.add('open');bump(c,1);lobbyTrack(c.code);
- closePeers();$('grid').innerHTML='';TILES={};MYKEY=Math.random().toString(36).slice(2,10);
+ closePeers();$('grid').innerHTML='';$('cmsgs').innerHTML='';TILES={};MYKEY=Math.random().toString(36).slice(2,10);
  {const r=await getMedia();stream=r.s;icons();if(r.why)toast(r.why)}
  try{R=SB.channel('room-'+c.code,{config:{presence:{key:MYKEY},broadcast:{self:false}}});
-  R.on('presence',{event:'sync'},drawGrid);R.on('broadcast',{event:'sig'},e=>onSig(e.payload));
+  R.on('presence',{event:'sync'},drawGrid);R.on('broadcast',{event:'sig'},e=>onSig(e.payload));R.on('broadcast',{event:'chat'},e=>addChat(e.payload));
   R.subscribe(async st=>{if(st==='SUBSCRIBED')await R.track({name:ME.name})})}catch(e){R=null;toast('Could not join the room')}
  drawGrid();renderSeg()}
 function sig(to,o){try{R&&R.send({type:'broadcast',event:'sig',payload:{...o,to,from:MYKEY}})}catch(e){}}
@@ -361,10 +460,11 @@ function stopShare(){if(!screenStream)return;screenStream.getTracks().forEach(t=
 async function startShare(){if(screenStream)return stopShare();try{const sc=await navigator.mediaDevices.getDisplayMedia({video:true}),vt=sc.getVideoTracks()[0];screenStream=sc;vSenders().forEach(x=>x.replaceTrack(vt).catch(()=>{}));$('scr').classList.add('on');vt.onended=stopShare;drawGrid()}catch(e){}}
 $('leave').onclick=()=>{stream&&stream.getTracks().forEach(t=>t.stop());stream=null;screenStream&&screenStream.getTracks().forEach(t=>t.stop());screenStream=null;rawMic&&rawMic.getTracks().forEach(t=>t.stop());try{AC&&AC.close()}catch(e){}AC=null;$('pop').style.display='none';$('scr').classList.remove('on');icons();closePeers();try{R&&SB.removeChannel(R)}catch(e){}R=null;$('grid').innerHTML='';TILES={};lobbyTrack(null);cur=null;$('call').classList.remove('open')};
 function setSeg(i){if(!isOp())return toast('Only operators can change segments.');const s=sorted();if(i<0||i>=s.length)return;S.seg={idx:i,by:ME.name,ts:Date.now()};renderAll();DBX.set('state','segment',S.seg).catch(e=>toast(errMsg(e)))}
-function renderSeg(){const s=sorted(),i=S.seg.idx;if(!$('sgs'))return;
+function renderBanner(){const x=sorted()[S.seg.idx],h=`<div class="c"><small>Program Segment</small><b>${esc(x?x.t:'—')}</b></div><div class="c"><small>Delegate</small><b>${esc(x&&x.d?x.d:'—')}</b></div>`;document.querySelectorAll('.bn').forEach(e=>e.innerHTML=h)}
+function renderSeg(){const s=sorted(),i=S.seg.idx;renderBanner();if(!$('sgs'))return;
  $('sig').innerHTML=`<div>NOW: <span>${esc(s[i]?.t||'— not started —')}</span></div><div>NEXT: <span>${esc(s[i+1]?.t||'—')}</span></div>`;
- $('sgs').innerHTML=s.length?s.map((x,k)=>`<button class="sg ${k===i?'now':k===i+1?'nx':''}" data-k="${k}">${k+1}. ${esc(x.t)}<br><small style="color:#cfd6e2">${esc(x.d)}</small></button>`).join(''):'<div class="empty">Add program items on the dashboard.</div>';
+ $('sgs').innerHTML=s.length?s.map((x,k)=>`<button class="sg ${k===i?'now':k===i+1?'nx':''}" data-k="${k}">${fmtT(x.tm)?`<small class="mono" style="color:${k===i?'#fff':'var(--ac)'}">${esc(fmtT(x.tm))}</small><br>`:''}${k+1}. ${esc(x.t)}<br><small style="color:#cfd6e2">${esc(x.d)}</small></button>`).join(''):'<div class="empty">Add program items on the dashboard.</div>';
  $('sgs').querySelectorAll('.sg').forEach(b=>b.onclick=()=>setSeg(+b.dataset.k))}
 $('nextSg').onclick=()=>setSeg(S.seg.idx+1);
-initCtl();renderAll();$('mem').onclick=openMembers;initAuth();
+initCtl();renderAll();$('mem').onclick=openMembers;initMon();initAuth();
 </script></body></html>
